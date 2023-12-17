@@ -2,13 +2,23 @@ const express = require("express");
 const User = require("../models/User");
 const router = express.Router();
 const { body, validationResult } = require("express-validator");
+const bcrypt = require("bcryptjs");
+const jwt =require('jsonwebtoken')
+
+const JWT_SECRET = "ThisIsSecretKeyForToken"
 
 const validatorArray = [
-    //
     body("name", "the value of name should be atleast 5").isLength({ min: 5 }),
     body("password", "Enter strong password").isLength({ min: 8 }),
     body("email", "Enter valid email, please").isEmail(),
 ];
+
+// function to encrypt the password before storing it's hash value onto the database
+const createSecurePassword = async (userPassword) => {
+    const salt = await bcrypt.genSalt(10);
+    let securePassword = await bcrypt.hash(userPassword, salt);
+    return securePassword;
+};
 
 // endpoint -->api/auth/createuser . No login required
 router.post("/createuser", validatorArray, async (request, response) => {
@@ -29,15 +39,20 @@ router.post("/createuser", validatorArray, async (request, response) => {
         }
 
         // if user doesn't exist then create a new user
-        user = User.create({
+        user = await User.create({
             name: request.body.name,
-            password: request.body.password,
+            password: await createSecurePassword(request.body.password),
             email: request.body.email,
         });
-        // warning user creation success
-        response.send(
-            `user created ${JSON.stringify(request.body, null, "\t")}`
-        );
+        const data ={
+            user:{
+                id:user.id
+            }
+        }
+        const authToken = jwt.sign(data,JWT_SECRET)
+        
+        // user creation success
+        response.json({authToken})
     } catch (err) {
         console.log(err.message);
         response.status(500).send("Error contacting database");
