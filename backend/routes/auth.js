@@ -3,6 +3,7 @@ const User = require("../models/User");
 const router = express.Router();
 const { body, validationResult } = require("express-validator");
 const bcrypt = require("bcryptjs");
+const fetchuser = require("../middleware/fetchuser");
 const jwt = require("jsonwebtoken");
 
 const JWT_SECRET = "ThisIsSecretKeyForToken";
@@ -105,5 +106,17 @@ router.post(
         }
     }
 );
+
+// endpoint --> /api/auth/getuser. Login Required
+
+router.post("/getuser",fetchuser, async (request, response) => {
+    try {
+        let userId = request.user.id;
+        const user = await User.findById(userId).select("-password");
+        response.send(user);
+    } catch (error) {
+        response.status(500).send("Database connection failed");
+    }
+});
 
 module.exports = router;
