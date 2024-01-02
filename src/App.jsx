@@ -1,57 +1,24 @@
-import React, { useState } from 'react';
-
-const YourComponent = () => {
-  const [selectedFile, setSelectedFile] = useState(null);
-
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    setSelectedFile(file);
-  };
-
-  const handleFormSubmit = async (event) => {
-    event.preventDefault();
-
-    if (selectedFile) {
-      const formData = new FormData();
-      formData.append('image', selectedFile);
-
-      try {
-        const response = await fetch('http://localhost:5000/api/image/postimage', {
-          method: 'POST',
-          body: formData,
-        });
-
-        if (response.ok) {
-          console.log('Image uploaded successfully!');
-        } else {
-          console.error('Error uploading image');
-        }
-      } catch (error) {
-        console.error('Error:', error);
-      }
-    } else {
-      console.warn('No file selected');
-    }
-  };
-
-  return (
-    <>
-      <form onSubmit={handleFormSubmit}>
-        <div className="mb-1">
-          Image <span className="font-css top">*</span>
-          <div className="">
-            <input
-              type="file"
-              id="file-input"
-              name="ImageStyle"
-              onChange={handleFileChange}
-            />
-          </div>
-        <button type="submit">Submit</button>
-        </div>
-      </form>
-    </>
-  );
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Navbar from "./components/Navbar";
+import Home from "./components/Home";
+import About from "./components/About";
+import NoteState from "./context/notes/NoteState";
+const App = () => {
+    return (
+        <>
+            <NoteState>
+                <Router>
+                    <Navbar />
+                    <Routes>
+                        <Route path="/" element={<Home />} />
+                        <Route path="/home" element={<Home />} />
+                        <Route path="/about" element={<About />} />
+                    </Routes>
+                </Router>
+            </NoteState>
+        </>
+    );
 };
 
-export default YourComponent;
+export default App;
