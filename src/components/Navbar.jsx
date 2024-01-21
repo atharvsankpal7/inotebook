@@ -5,7 +5,7 @@ const Navbar = () => {
     useEffect(() => {}, [location]);
 
     return (
-        <nav className="navbar navbar-expand-lg bg-body-tertiary">
+        <nav className="navbar navbar-expand-lg bg-body-tertiary ">
             <div className="container-fluid">
                 <Link className="navbar-brand" to="/">
                     Company
@@ -29,7 +29,9 @@ const Navbar = () => {
                         <li className="nav-item ">
                             <Link
                                 className={`nav-link ${
-                                    location.pathname === "/" ? "active text-info" : ""
+                                    location.pathname === "/"
+                                        ? "active text-info"
+                                        : ""
                                 }`}
                                 aria-current="page"
                                 to="/"
@@ -51,15 +53,15 @@ const Navbar = () => {
                         </li>
                     </ul>
                     <form className="d-flex gap-2">
-                        <button
-                            className="btn btn-outline-light "
-                            type="submit"
+                        <Link
+                            className=" w-100 h-100 btn btn-outline-light"
+                            to="/signup"
                         >
-                            Sign-up
-                        </button>
-                        <button className="btn btn-info " type="submit">
+                            Sign-Up
+                        </Link>
+                        <Link className=" btn btn-info " to="/login">
                             Login
-                        </button>
+                        </Link>
                     </form>
                 </div>
             </div>

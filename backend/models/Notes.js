@@ -5,14 +5,13 @@ const NotesSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "user",
     },
-
-    title: {
+    baseImage: {
         type: String,
         required: true,
     },
     description: {
         type: String,
-        required: true,
+        required: false,
     },
     tag: {
         type: String,
@@ -21,6 +20,10 @@ const NotesSchema = new mongoose.Schema({
     date: {
         type: Date,
         default: Date.now,
+    },
+    maskedImage: {
+        type: String,
+        required: false,
     },
 });
 
