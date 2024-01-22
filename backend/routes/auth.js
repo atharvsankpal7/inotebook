@@ -50,10 +50,10 @@ router.post("/createuser", validatorArray, async (request, response) => {
                 id: user.id,
             },
         };
+        const username = request.body.name;
         const authToken = jwt.sign(data, JWT_SECRET);
-
         // user creation success
-        response.json({ authToken });
+        response.json({ authToken, username });
     } catch (err) {
         console.log(err.message);
         response.status(500).send("Error contacting database");
@@ -97,10 +97,12 @@ router.post(
                     id: user.id,
                 },
             };
+            const username = user.name;
+
             const authToken = jwt.sign(data, JWT_SECRET);
 
             // user login success
-            response.json({ authToken });
+            response.json({ authToken, username });
         } catch (err) {
             response.status(500).send("Database connection failed");
         }
@@ -109,7 +111,7 @@ router.post(
 
 // endpoint --> /api/auth/getuser. Login Required
 
-router.post("/getuser",fetchuser, async (request, response) => {
+router.post("/getuser", fetchuser, async (request, response) => {
     try {
         let userId = request.user.id;
         const user = await User.findById(userId).select("-password");

@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
-const YourComponent = () => {
+const Signup = () => {
     const url = "http://localhost:5000/api/";
     const [formData, setFormData] = useState({
         username: "",
@@ -13,9 +12,11 @@ const YourComponent = () => {
 
     const navigate = useNavigate();
 
+    const [shouldModalPopup, setShouldModalPopup] = useState(false);
+
     const handleFormSubmit = async (event) => {
         event.preventDefault();
-
+        setShouldModalPopup(false);
         // Perform client-side validation
         const validationErrors = validateForm(formData);
         if (Object.keys(validationErrors).length !== 0) {
@@ -31,17 +32,23 @@ const YourComponent = () => {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    name: formData.password,
+                    name: formData.username,
                     email: formData.email,
                     password: formData.password,
                 }),
             });
+
+            if (!response.ok) {
+                setShouldModalPopup(true);
+                return
+            }
             const data = await response.json();
             // If response does not have auth token
             if (!data.authToken) {
                 console.log("user already exist");
                 return;
             }
+            document.getElementById("closeBtn").click();
 
             localStorage.setItem("token", data.authToken);
             navigate("/");
@@ -65,8 +72,8 @@ const YourComponent = () => {
 
         if (!data.password.trim()) {
             errors.password = "Password is required";
-        } else if (data.password.length < 6) {
-            errors.password = "Password must be at least 6 characters";
+        } else if (data.password.length < 8) {
+            errors.password = "Password must be at least 8 characters";
         }
 
         return errors;
@@ -189,6 +196,12 @@ const YourComponent = () => {
                                 <button
                                     className="w-100 mb-4 btn btn-primary"
                                     type="submit"
+                                    data-bs-toggle={`${
+                                        shouldModalPopup ? "modal" : ""
+                                    }`}
+                                    data-bs-target={`${
+                                        shouldModalPopup ? "#exampleModal" : ""
+                                    }`}
                                 >
                                     Sign up
                                 </button>
@@ -197,8 +210,49 @@ const YourComponent = () => {
                     </div>
                 </div>
             </div>
+
+            <div
+                className="modal fade"
+                id="exampleModal"
+                tabIndex="-1"
+                aria-labelledby="exampleModalLabel"
+                aria-hidden="true"
+            >
+                <div className="modal-dialog">
+                    <div className="modal-content">
+                        <div className="modal-header bg-danger text-white">
+                            <h1
+                                className="modal-title fs-5 "
+                                id="exampleModalLabel"
+                            >
+                                Invalid Credentials
+                            </h1>
+                            <button
+                                type="button"
+                                className="btn-close"
+                                data-bs-dismiss="modal"
+                                aria-label="Close"
+                                id="closeBtn"
+                            ></button>
+                        </div>
+                        <div className="modal-body">
+                            Please use Unique E-mail id, user with this email Id
+                            already exist
+                        </div>
+                        <div className="modal-footer ">
+                            <button
+                                type="button"
+                                className="btn btn-danger"
+                                data-bs-dismiss="modal"
+                            >
+                                Close
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </form>
     );
 };
 
-export default YourComponent;
+export default Signup;

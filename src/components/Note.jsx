@@ -5,7 +5,11 @@ const Note = (props) => {
         "https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_1280.jpg";
     return (
         <div className="card col" style={{ width: 18 + "rem" }}>
-            <img src={image} className="card-img-top" alt="image" />
+            <img
+                src={props.baseImage.length > 100 ? props.baseImage : image}
+                className="card-img-top"
+                alt="image"
+            />
             <div className="card-body">
                 <h5 className="card-title">{props.title}</h5>
                 <p className="card-text">{props.description}</p>

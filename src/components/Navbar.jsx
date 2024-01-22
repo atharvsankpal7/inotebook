@@ -1,13 +1,15 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Link, useLocation } from "react-router-dom";
 const Navbar = () => {
     let location = useLocation();
-    useEffect(() => {}, [location]);
-
+    const handleLogOutClick = () => {
+        localStorage.removeItem("token");
+        location("/login");
+    };
     return (
         <nav className="navbar navbar-expand-lg bg-body-tertiary ">
             <div className="container-fluid">
-                <Link className="navbar-brand" to="/">
+                <Link className="navbar-brand" to="/about">
                     Company
                 </Link>
                 <button
@@ -52,17 +54,28 @@ const Navbar = () => {
                             </Link>
                         </li>
                     </ul>
-                    <form className="d-flex gap-2">
-                        <Link
-                            className=" w-100 h-100 btn btn-outline-light"
-                            to="/signup"
-                        >
-                            Sign-Up
-                        </Link>
-                        <Link className=" btn btn-info " to="/login">
-                            Login
-                        </Link>
-                    </form>
+                    {!localStorage.getItem("token") ? (
+                        <form className="d-flex gap-2">
+                            <Link
+                                className=" w-100 h-100 btn btn-outline-light"
+                                to="/signup"
+                            >
+                                Sign-Up
+                            </Link>
+                            <Link className=" btn btn-info " to="/login">
+                                Login
+                            </Link>
+                        </form>
+                    ) : (
+                        <form>
+                            <Link
+                                className="w-100 h-100 btn btn-danger"
+                                onClick={handleLogOutClick}
+                            >
+                                Log Out
+                            </Link>
+                        </form>
+                    )}
                 </div>
             </div>
         </nav>

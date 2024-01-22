@@ -23,7 +23,8 @@ router.post(
         try {
             const errors = validationResult(req);
             if (!errors.isEmpty()) {
-                res.send(400).json({ errors });
+                res.status(400).json({ errors });
+                return; // Important: Add a return statement to exit the function here
             }
             const newNote = new Notes({
                 user: req.user.id,
@@ -57,11 +58,6 @@ router.put("/updatenote/:id", async (req, res) => {
             res.status(400).send("Note not found");
         }
 
-        // // If logged in user don't own the Note
-        //  if (note.user.toString() !== req.user.id) {
-        //     res.status(401).send("Unautheticated user");
-        // }
-
         // Updation success
         //findByIdAndUpdate(note_to_be_updated, what_should_be_updated,if_new_parameters_are_updated_add_them)
         note = await Notes.findByIdAndUpdate(req.params.id, newNote, {
@@ -77,14 +73,14 @@ router.put("/updatenote/:id", async (req, res) => {
 // endpoint --> api/notes/deletenote/id
 router.delete("/deletenote/:id", fetchuser, async (req, res) => {
     try {
-        // Find the note in database
+        // Find the note in the database
         let note = await Notes.findById(req.params.id);
         if (!note) {
             res.status(404).send("note not found");
         }
-        // If logged in user don't own the Note
+        // If the logged-in user doesn't own the note
         if (note.user.toString() !== req.user.id) {
-            res.status(401).send("Unautheticated user");
+            res.status(401).send("Unauthenticated user");
         }
         await Notes.findByIdAndDelete(req.params.id);
         res.send("note deleted successfully");
@@ -92,7 +88,5 @@ router.delete("/deletenote/:id", fetchuser, async (req, res) => {
         res.send("database connectivity error");
     }
 });
-
-
 
 module.exports = router;
