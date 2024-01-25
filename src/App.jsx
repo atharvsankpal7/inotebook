@@ -6,6 +6,7 @@ import About from "./components/About";
 import Signup from "./components/Signup";
 import NoteState from "./context/notes/NoteState";
 import Login from "./components/Login";
+import ChatbotComponent from "./components/ChatbotComponent";
 const App = () => {
     return (
         <>
@@ -19,9 +20,9 @@ const App = () => {
                             <Route path="signup" element={<Signup />} />
                             <Route path="login" element={<Login />} />
                             <Route
-                                path="emptyPath"
-                                element={<NoteState />}
-                            ></Route>
+                                path="/chatbot"
+                                element={<ChatbotComponent />}
+                            />
                         </Routes>
                     </div>
                 </Router>

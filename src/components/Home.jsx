@@ -25,12 +25,12 @@ const Home = () => {
         const reader = new FileReader();
 
         // Set up the onload event handler for the FileReader
-        reader.onload = function (event) {
+        reader.onload = function(event) {
             // Create a new Image object
             const image = new Image();
 
             // Set up the onload event handler for the Image
-            image.onload = function () {
+            image.onload = function() {
                 // Now that the image has loaded, you can access its dimensions
 
                 // Create a canvas element
@@ -57,8 +57,18 @@ const Home = () => {
         // Read the selected image as a data URL using FileReader
         reader.readAsDataURL(newImage);
     };
-
+    
+    // if not logged in then navigate to the login page
     const navigate = useNavigate();
+    useEffect(() => {
+        if (localStorage.getItem("token") === null) {
+            navigate("/login");
+            return;
+        }
+
+        getNotes();
+    }, []);
+
     let getNotes = async () => {
         try {
             const response = await fetch(`${url}notes/getallnotes`, {
@@ -81,14 +91,7 @@ const Home = () => {
             console.error("Error fetching notes:", error);
         }
     };
-    useEffect(() => {
-        if (localStorage.getItem("token") === null) {
-            navigate("/login");
-            return;
-        }
 
-        getNotes();
-    }, []);
     const uploadImage = async () => {
         setImageUploadStatus({ userTried: false, isUploaded: false });
 

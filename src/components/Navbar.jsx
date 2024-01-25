@@ -12,17 +12,6 @@ const Navbar = () => {
                 <Link className="navbar-brand" to="/about">
                     Company
                 </Link>
-                <button
-                    className="navbar-toggler"
-                    type="button"
-                    data-bs-toggle="collapse"
-                    data-bs-target="#navbarSupportedContent"
-                    aria-controls="navbarSupportedContent"
-                    aria-expanded="false"
-                    aria-label="Toggle navigation"
-                >
-                    <span className="navbar-toggler-icon"></span>
-                </button>
                 <div
                     className="collapse navbar-collapse"
                     id="navbarSupportedContent"
@@ -53,11 +42,27 @@ const Navbar = () => {
                                 About
                             </Link>
                         </li>
+                        {localStorage.getItem("token") ? (
+                            <li className="nav-item">
+                                <Link
+                                    className={`nav-link ${
+                                        location.pathname === "/chatbot"
+                                            ? " active text-info"
+                                            : "text-warning "
+                                    }`}
+                                    to="/chatbot"
+                                >
+                                    ChatBot
+                                </Link>
+                            </li>
+                        ) : (
+                            <></>
+                        )}
                     </ul>
                     {!localStorage.getItem("token") ? (
                         <form className="d-flex gap-2">
                             <Link
-                                className=" w-100 h-100 btn btn-outline-light"
+                                className=" w-100 h-100 btn btn-outline-light "
                                 to="/signup"
                             >
                                 Sign-Up

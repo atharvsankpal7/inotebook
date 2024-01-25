@@ -1,101 +1,97 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 const Signup = () => {
-    const url = "http://localhost:5000/api/";
-    const [formData, setFormData] = useState({
-        username: "",
-        email: "",
-        password: "",
+    const apiUrl = "http://localhost:5000/api/";
+  const navigate = useNavigate();
+
+  const [formData, setFormData] = useState({
+    username: "",
+    email: "",
+    password: "",
+  });
+
+  const [errors, setErrors] = useState({});
+  const [shouldModalPopup, setShouldModalPopup] = useState(false);
+
+  const handleFormSubmit = async (event) => {
+    event.preventDefault();
+    setShouldModalPopup(false);
+
+    const validationErrors = validateForm(formData);
+    if (Object.keys(validationErrors).length !== 0) {
+      setErrors(validationErrors);
+      return;
+    }
+
+    try {
+      const response = await fetch(`${apiUrl}auth/createuser`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: formData.username,
+          email: formData.email,
+          password: formData.password,
+        }),
+      });
+
+      if (!response.ok) {
+        setShouldModalPopup(true);
+        return;
+      }
+
+      const data = await response.json();
+      if (!data.authToken) {
+        console.log("user already exists");
+        return;
+      }
+      localStorage.setItem("token",data.authToken)
+      navigate("/");
+    } catch (error) {
+      console.error("Error during login request:", error);
+    }
+  };
+
+  const validateForm = (data) => {
+    let errors = {};
+
+    if (!data.username.trim()) {
+      errors.username = "Username is required";
+    }
+
+    if (!data.email.trim()) {
+      errors.email = "Email is required";
+    } else if (!isValidEmail(data.email)) {
+      errors.email = "Invalid email address";
+    }
+
+    if (!data.password.trim()) {
+      errors.password = "Password is required";
+    } else if (data.password.length < 8) {
+      errors.password = "Password must be at least 8 characters";
+    }
+
+    return errors;
+  };
+
+  const isValidEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.id]: e.target.value,
     });
 
-    const [errors, setErrors] = useState({});
+    setErrors({
+      ...errors,
+      [e.target.id]: "",
+    });
+  };
 
-    const navigate = useNavigate();
-
-    const [shouldModalPopup, setShouldModalPopup] = useState(false);
-
-    const handleFormSubmit = async (event) => {
-        event.preventDefault();
-        setShouldModalPopup(false);
-        // Perform client-side validation
-        const validationErrors = validateForm(formData);
-        if (Object.keys(validationErrors).length !== 0) {
-            setErrors(validationErrors);
-            return;
-        }
-
-        // Contacting the backend
-        try {
-            const response = await fetch(`${url}auth/createuser`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    name: formData.username,
-                    email: formData.email,
-                    password: formData.password,
-                }),
-            });
-
-            if (!response.ok) {
-                setShouldModalPopup(true);
-                return
-            }
-            const data = await response.json();
-            // If response does not have auth token
-            if (!data.authToken) {
-                console.log("user already exist");
-                return;
-            }
-            document.getElementById("closeBtn").click();
-
-            localStorage.setItem("token", data.authToken);
-            navigate("/");
-        } catch (error) {
-            console.error("Error during login request:", error);
-        }
-    };
-
-    const validateForm = (data) => {
-        let errors = {};
-
-        if (!data.username.trim()) {
-            errors.username = "Username is required";
-        }
-
-        if (!data.email.trim()) {
-            errors.email = "Email is required";
-        } else if (!isValidEmail(data.email)) {
-            errors.email = "Invalid email address";
-        }
-
-        if (!data.password.trim()) {
-            errors.password = "Password is required";
-        } else if (data.password.length < 8) {
-            errors.password = "Password must be at least 8 characters";
-        }
-
-        return errors;
-    };
-
-    const isValidEmail = (email) => {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return emailRegex.test(email);
-    };
-
-    const handleChange = (e) => {
-        setFormData({
-            ...formData,
-            [e.target.id]: e.target.value,
-        });
-
-        // Clear the corresponding error when user types
-        setErrors({
-            ...errors,
-            [e.target.id]: "",
-        });
-    };
 
     return (
         <form onSubmit={handleFormSubmit}>
