@@ -34,13 +34,12 @@ const Login = () => {
                     password: formData.password,
                 }),
             });
-            const data = await response.json();
             // If response does not have auth token
             if (!response.ok) {
                 setShouldModalPopup(true);
                 return;
             }
-            document.getElementById("closeBtn").click();
+            const data = await response.json();
             localStorage.setItem("token", data.authToken);
             localStorage.setItem("username", data.username);
             navigate("/");
