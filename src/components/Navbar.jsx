@@ -4,7 +4,7 @@ const Navbar = () => {
     let location = useLocation();
     const handleLogOutClick = () => {
         localStorage.removeItem("token");
-        location("/login");
+        location.pathname("/login");
     };
     return (
         <nav className="navbar navbar-expand-lg bg-body-tertiary ">
@@ -33,6 +33,18 @@ const Navbar = () => {
                         <li className="nav-item">
                             <Link
                                 className={`nav-link ${
+                                    location.pathname === "/History"
+                                        ? " active text-info"
+                                        : ""
+                                }`}
+                                to="/History"
+                            >
+                                History
+                            </Link>
+                        </li>
+                        <li className="nav-item">
+                            <Link
+                                className={`nav-link ${
                                     location.pathname === "/about"
                                         ? " active text-info"
                                         : ""
@@ -42,7 +54,7 @@ const Navbar = () => {
                                 About
                             </Link>
                         </li>
-                        {localStorage.getItem("token") ? (
+                        {/* {localStorage.getItem("token") ? (
                             <li className="nav-item">
                                 <Link
                                     className={`nav-link ${
@@ -57,12 +69,12 @@ const Navbar = () => {
                             </li>
                         ) : (
                             <></>
-                        )}
+                        )} */}
                     </ul>
                     {!localStorage.getItem("token") ? (
                         <form className="d-flex gap-2">
                             <Link
-                                className=" w-100 h-100 btn btn-outline-light "
+                                className="  btn btn-outline-light "
                                 to="/signup"
                             >
                                 Sign-Up
@@ -74,7 +86,7 @@ const Navbar = () => {
                     ) : (
                         <form>
                             <Link
-                                className="w-100 h-100 btn btn-danger"
+                                className=" btn btn-danger"
                                 onClick={handleLogOutClick}
                             >
                                 Log Out
@@ -82,6 +94,14 @@ const Navbar = () => {
                         </form>
                     )}
                 </div>
+                <button
+                    className="navbar-toggler my-1 "
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent"
+                >
+                    <span className="navbar-toggler-icon"></span>
+                </button>
             </div>
         </nav>
     );

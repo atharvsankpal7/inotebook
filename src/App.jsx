@@ -6,7 +6,8 @@ import About from "./components/About";
 import Signup from "./components/Signup";
 import NoteState from "./context/notes/NoteState";
 import Login from "./components/Login";
-import ChatbotComponent from "./components/ChatbotComponent";
+// import ChatbotComponent from "./components/ChatbotComponent";
+import UploadHistory from "./components/UploadHistory";
 const App = () => {
     return (
         <>
@@ -17,12 +18,16 @@ const App = () => {
                         <Routes>
                             <Route path="/" element={<Home />} />
                             <Route path="/about" element={<About />} />
+                            <Route
+                                path="/history"
+                                element={<UploadHistory />}
+                            />
                             <Route path="signup" element={<Signup />} />
                             <Route path="login" element={<Login />} />
-                            <Route
+                            {/* <Route
                                 path="/chatbot"
                                 element={<ChatbotComponent />}
-                            />
+                            /> */}
                         </Routes>
                     </div>
                 </Router>

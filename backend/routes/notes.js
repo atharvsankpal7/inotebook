@@ -29,17 +29,18 @@ router.post(
             const newNote = new Notes({
                 user: req.user.id,
                 baseImage: req.body.baseImage,
+                title: req.user.id,
                 date: Date.now(),
             });
             const savedNote = await newNote.save();
-            let base64Image = req.body.baseImage.split(",")[1];
-            fetch("http://192.168.29.106:4000/predict", {
-                method: "POST",
-                body: JSON.stringify({
-                    baseImage: base64Image,
-                    id: savedNote._id,
-                }),
-            }).then((response) => response.json());
+            // let base64Image = req.body.baseImage.split(",")[1];
+            // await fetch("http://192.168.29.106:4000/predict", {
+            //     method: "POST",
+            //     body: JSON.stringify({
+            //         baseImage: base64Image,
+            //         id: savedNote._id,
+            //     }),
+            // }).then((response) => response.json());
             res.send(savedNote);
         } catch (e) {
             res.status(500).send("database connectivity error");

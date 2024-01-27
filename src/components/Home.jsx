@@ -1,4 +1,5 @@
 import "../App.css";
+import "../css/backgroundImage.css";
 import NoteContext from "../context/notes/NoteContext";
 import React, { useContext, useEffect, useState } from "react";
 import Note from "./Note";
@@ -23,41 +24,41 @@ const Home = () => {
         setSelectedImage(newImage);
         // Create a new FileReader to read the selected image
         const reader = new FileReader();
+        try {
+            // Set up the onload event handler for the FileReader
+            reader.onload = function(event) {
+                // Create a new Image object
+                const image = new Image();
 
-        // Set up the onload event handler for the FileReader
-        reader.onload = function(event) {
-            // Create a new Image object
-            const image = new Image();
+                // Set up the onload event handler for the Image
+                image.onload = function() {
+                    // Now that the image has loaded, you can access its dimensions
 
-            // Set up the onload event handler for the Image
-            image.onload = function() {
-                // Now that the image has loaded, you can access its dimensions
+                    // Create a canvas element
+                    const canvas = document.createElement("canvas");
+                    const ctx = canvas.getContext("2d");
 
-                // Create a canvas element
-                const canvas = document.createElement("canvas");
-                const ctx = canvas.getContext("2d");
+                    // Set the canvas dimensions to match the image
+                    canvas.width = image.width;
+                    canvas.height = image.height;
 
-                // Set the canvas dimensions to match the image
-                canvas.width = image.width;
-                canvas.height = image.height;
+                    // Draw the image onto the canvas
+                    ctx.drawImage(image, 0, 0);
 
-                // Draw the image onto the canvas
-                ctx.drawImage(image, 0, 0);
+                    // Get the base64-encoded data URL
+                    const base64String = canvas.toDataURL("image/jpeg");
 
-                // Get the base64-encoded data URL
-                const base64String = canvas.toDataURL("image/jpeg");
+                    setImageUploadStatus({ imageString: base64String });
+                };
 
-                setImageUploadStatus({ imageString: base64String });
+                // Set the source of the Image to the data URL obtained from FileReader
+                image.src = event.target.result;
             };
-
-            // Set the source of the Image to the data URL obtained from FileReader
-            image.src = event.target.result;
-        };
-
+        } catch (error) {}
         // Read the selected image as a data URL using FileReader
         reader.readAsDataURL(newImage);
     };
-    
+
     // if not logged in then navigate to the login page
     const navigate = useNavigate();
     useEffect(() => {
@@ -118,6 +119,7 @@ const Home = () => {
             const currentNotes = notes;
             currentNotes.push(data);
             setNotes(currentNotes);
+            setSelectedImage(null);
             getNotes();
         } catch (error) {
             console.error("Error fetching notes:", error);
@@ -140,16 +142,20 @@ const Home = () => {
             ) : (
                 <></>
             )}
-            <h2 className="text-center pt-3">
-                {" "}
-                Welcome back,{" "}
-                {localStorage.getItem("username")
-                    ? localStorage.getItem("username")
-                    : "username"}{" "}
-                !!!
-            </h2>
-            <div className="container d-flex justify-content-center text-xxl-center">
-                <div className="image-upload-container ">
+
+            <div className="container d-flex flex-column align-items-center justify-content-center text-xxl-center backgroundImage w-75">
+                <h2
+                    className="text-center pt-3 "
+                    style={{ fontSize: 50 + "px", color: "red" }}
+                >
+                    {" "}
+                    Welcome back,{" "}
+                    {localStorage.getItem("username")
+                        ? localStorage.getItem("username")
+                        : "username"}{" "}
+                    !!!
+                </h2>
+                <div className="image-upload-container  ">
                     <div className="img ">
                         <input
                             type="file"
@@ -204,6 +210,7 @@ const Home = () => {
                             key={note._id}
                             baseImage={note.baseImage}
                             description={note.description}
+                            title={note.title}
                             image={note.baseImage}
                         />
                     ))}

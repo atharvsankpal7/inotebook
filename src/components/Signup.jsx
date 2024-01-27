@@ -49,6 +49,7 @@ const Signup = () => {
             localStorage.setItem("token", data.authToken);
             navigate("/");
         } catch (error) {
+            setShouldModalPopup(true);
             console.error("Error during login request:", error);
         }
     };
@@ -97,22 +98,28 @@ const Signup = () => {
             <div className="container-fluid p-4">
                 <div className="row">
                     <div className="col-md-6 text-center text-md-start d-flex flex-column justify-content-center">
-                        <h1 className="my-5 display-3 fw-bold ls-tight px-3">
-                            The best offer <br />
-                            <span className="text-primary">
-                                for your business
+                        <div className="h-1 my-5 display-3 fw-bold ls-tight px-3">
+                            SmartAgroScan <br />
+                            <span
+                                className="  text-primary"
+                                style={{ fontSize: 2.65 + "rem" }}
+                            >
+                                Revolutionizing Plant Health with
+                                AI-Powered Diagnosis
                             </span>
-                        </h1>
+                        </div>
 
                         <p
                             className="px-3"
                             style={{ color: "hsl(217, 10%, 50.8%)" }}
                         >
-                            Lorem ipsum dolor sit amet consectetur adipisicing
-                            elit. Eveniet, itaque accusantium odio, soluta,
-                            corrupti aliquam quibusdam tempora at cupiditate
-                            quis eum maiores libero veritatis? Dicta facilis
-                            sint aliquid ipsum atque?
+                            SmartAgroScan combines AI and Machine Learning to
+                            revolutionize plant disease identification. Our
+                            platform provides quick, accurate, and easy-to-use
+                            diagnostics, empowering growers and gardeners to
+                            protect their crops effectively. With SmartAgroScan,
+                            ensure the health and productivity of your plants
+                            through advanced technology.
                         </p>
                     </div>
 

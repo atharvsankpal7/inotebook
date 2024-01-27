@@ -9,19 +9,21 @@ const Login = () => {
 
     const [errors, setErrors] = useState({});
     const [shouldModalPopup, setShouldModalPopup] = useState(false);
+    const [isBackendError, setIsBackendError] = useState(false);
     const navigate = useNavigate();
 
     const handleLoginClick = async (e) => {
         e.preventDefault();
         setShouldModalPopup(false);
+        setIsBackendError(false);
+
         // Performing client-side validation
         const validationErrors = validateForm(formData);
-        // checking for validation errors
         if (Object.keys(validationErrors).length !== 0) {
             setErrors(validationErrors);
-            console.log(Object.keys(validationErrors));
             return;
         }
+
         // Contacting the backend
         try {
             const response = await fetch(`${url}auth/login`, {
@@ -36,10 +38,16 @@ const Login = () => {
             });
             // If response does not have auth token
             if (!response.ok) {
-                setShouldModalPopup(true);
+                setIsBackendError(true);
                 return;
             }
             const data = await response.json();
+
+            if (!data.authToken) {
+                setShouldModalPopup(true);
+            }
+
+            document.getElementById("closeBtn").click();
             localStorage.setItem("token", data.authToken);
             localStorage.setItem("username", data.username);
             navigate("/");
@@ -182,7 +190,6 @@ const Login = () => {
                                 className="btn-close"
                                 data-bs-dismiss="modal"
                                 aria-label="Close"
-                                id="closeBtn"
                             ></button>
                         </div>
                         <div className="modal-body">
@@ -193,6 +200,50 @@ const Login = () => {
                                 type="button"
                                 className="btn btn-danger"
                                 data-bs-dismiss="modal"
+                                id="closeBtn"
+                            >
+                                Close
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div
+                className="modal fade"
+                id="exampleModal"
+                tabIndex="-1"
+                aria-labelledby="exampleModalLabel"
+                aria-hidden="true"
+            >
+                <div className="modal-dialog">
+                    <div className="modal-content">
+                        <div className="modal-header bg-danger text-white">
+                            <h1
+                                className="modal-title fs-5 "
+                                id="exampleModalLabel"
+                            >
+                                {isBackendError
+                                    ? "Backend Error"
+                                    : "Invalid Credentials"}
+                            </h1>
+                            <button
+                                type="button"
+                                className="btn-close"
+                                data-bs-dismiss="modal"
+                                aria-label="Close"
+                            ></button>
+                        </div>
+                        <div className="modal-body">
+                            {isBackendError
+                                ? "Failed to connect to the server. Please try again later."
+                                : "Please Enter valid Credentials"}
+                        </div>
+                        <div className="modal-footer ">
+                            <button
+                                type="button"
+                                className="btn btn-danger"
+                                data-bs-dismiss="modal"
+                                id="closeBtn"
                             >
                                 Close
                             </button>

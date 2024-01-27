@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import "../css/chatbot.css";
 import { useNavigate } from "react-router-dom";
+import { OpenAI } from "openai";
 
 const Chatbot = () => {
     const [messages, setMessages] = useState([
@@ -16,10 +17,29 @@ const Chatbot = () => {
         }
     }, []);
 
-    useEffect(() => {
-        // Scroll to the bottom when messages change
-        scrollToBottom();
-    }, [messages]);
+    const openai = new OpenAI({
+        apiKey: "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"   ,
+        dangerouslyAllowBrowser: true,
+    });
+
+    const askOpenAI = async (text) => {
+        console.log(text);
+        try {
+            const response = await openai.chat.completions.create({
+                messages: [{ role: "user", content: text }],
+                model: "gpt-3.5-turbo",
+            });
+
+            const generatedText = response?.choices[0]?.message?.content;
+            console.log(response);
+            console.log(generatedText);
+
+            return generatedText;
+        } catch (error) {
+            console.error("Error calling OpenAI API:", error);
+            return "Error generating response.";
+        }
+    };
 
     const scrollToBottom = () => {
         if (messagesEndRef.current) {
@@ -27,8 +47,8 @@ const Chatbot = () => {
         }
     };
 
-    const handleSendMessage = (e) => {
-        e.preventDefault(); // to avoid reloading due to the use of `form` tag
+    const handleSendMessage = async (e) => {
+        e.preventDefault();
 
         if (newMessage.trim() === "") return;
 
@@ -37,18 +57,19 @@ const Chatbot = () => {
             { text: newMessage, isUser: true },
         ]);
 
-        setTimeout(() => {
-            setMessages((prevMessages) => [
-                ...prevMessages,
-                {
-                    text: "Sure thing! I am just a demo chatbot.",
-                    isUser: false,
-                },
-            ]);
-        }, 500);
+        const botResponse = await askOpenAI(newMessage);
+
+        setMessages((prevMessages) => [
+            ...prevMessages,
+            { text: botResponse, isUser: false },
+        ]);
 
         setNewMessage("");
     };
+
+    useEffect(() => {
+        scrollToBottom();
+    }, [messages]);
 
     return (
         <div className="container mt-5">
