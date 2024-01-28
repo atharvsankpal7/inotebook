@@ -46,6 +46,7 @@ const Signup = () => {
                 console.log("user already exists");
                 return;
             }
+            document.getElementById("closeBtn").click();
             localStorage.setItem("token", data.authToken);
             navigate("/");
         } catch (error) {
@@ -59,6 +60,8 @@ const Signup = () => {
 
         if (!data.username.trim()) {
             errors.username = "Username is required";
+        } else if (data.username.length < 5) {
+            errors.username = "Username should be atleast 5 characters";
         }
 
         if (!data.email.trim()) {

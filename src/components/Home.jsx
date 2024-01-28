@@ -62,7 +62,7 @@ const Home = () => {
     // if not logged in then navigate to the login page
     const navigate = useNavigate();
     useEffect(() => {
-        if (localStorage.getItem("token") === null) {
+        if (!localStorage.getItem("token")) {
             navigate("/login");
             return;
         }

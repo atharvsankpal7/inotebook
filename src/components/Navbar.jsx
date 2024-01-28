@@ -17,31 +17,37 @@ const Navbar = () => {
                     id="navbarSupportedContent"
                 >
                     <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li className="nav-item ">
-                            <Link
-                                className={`nav-link ${
-                                    location.pathname === "/"
-                                        ? "active text-info"
-                                        : ""
-                                }`}
-                                aria-current="page"
-                                to="/"
-                            >
-                                Home
-                            </Link>
-                        </li>
-                        <li className="nav-item">
-                            <Link
-                                className={`nav-link ${
-                                    location.pathname === "/History"
-                                        ? " active text-info"
-                                        : ""
-                                }`}
-                                to="/History"
-                            >
-                                History
-                            </Link>
-                        </li>
+                        {localStorage.getItem("token") ? (
+                            <>
+                                <li className="nav-item ">
+                                    <Link
+                                        className={`nav-link ${
+                                            location.pathname === "/"
+                                                ? "active text-info"
+                                                : ""
+                                        }`}
+                                        aria-current="page"
+                                        to="/"
+                                    >
+                                        Home
+                                    </Link>
+                                </li>
+                                <li className="nav-item">
+                                    <Link
+                                        className={`nav-link ${
+                                            location.pathname === "/History"
+                                                ? " active text-info"
+                                                : ""
+                                        }`}
+                                        to="/History"
+                                    >
+                                        History
+                                    </Link>
+                                </li>
+                            </>
+                        ) : (
+                            <></>
+                        )}
                         <li className="nav-item">
                             <Link
                                 className={`nav-link ${
@@ -54,7 +60,7 @@ const Navbar = () => {
                                 About
                             </Link>
                         </li>
-                        {/* {localStorage.getItem("token") ? (
+                        {localStorage.getItem("token") ? (
                             <li className="nav-item">
                                 <Link
                                     className={`nav-link ${
@@ -69,7 +75,7 @@ const Navbar = () => {
                             </li>
                         ) : (
                             <></>
-                        )} */}
+                        )}
                     </ul>
                     {!localStorage.getItem("token") ? (
                         <form className="d-flex gap-2">
